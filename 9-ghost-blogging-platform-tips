@@ -1,0 +1,60 @@
+NPM is not free. You pay for it with headaches and you shouldn't ever forget it. 
+
+I tried to update my Ghost blog and had issues with pretty much everything. From Ghost, to npm, and of course, node. Hopefully these resources will save someone else from suffering like I did. 
+
+---
+
+# Updating Ghost
+When updating Ghost manually, you literally just copy over the core files (a directory literally named core, index.js, and all json files). See the official docs [here](http://support.ghost.org/how-to-upgrade/#command-guide).
+
+Note from the docs:
+```
+We recommend upgrading from any version > 0.5 to 0.7.1 first and then to 0.11.1.
+```
+I think they mean any version up to 0.5? Anyways, download the latest version of Ghost:
+```
+curl -LOk https://ghost.org/zip/ghost-latest.zip
+```
+
+Copy the core directory, index.js, and all JSON files to your ghost root directory. Taaa Daaa!
+
+#### Of Course Things Don't Go Smoothly
+
+After updating Ghost, I received an error something along the lines of:
+```
+use of const in strict mode
+``` 
+and also:
+```
+module.js:340 throw err; ^ Error: Cannot find module 'moment-timezone'
+```
+
+This suggested that my version of node.js was out of date, of which I updated to the latest version. 
+
+#FREAKIN DON'T! 
+
+#### Ghost v0.11.8 ONLY RUNS UP TO NODE v6.9.1
+
+This means I had to install a specific version of Node which was **not the latest**. There were probably better and more safer ways of doing so, but I simply just downloaded the latest working version that was compatible with Ghost [v6.9.1](https://nodejs.org/en/blog/release/v6.9.1/) and overwrote the binary I had. Find the path of where `node` is currently installed with `which node`. 
+
+#### One Last Error
+
+After updating Ghost and Node and modules from npm, I received yet another error regarding a `sqlite3 module`. Forget trying to tweak anything. [Rebuild from source](http://stackoverflow.com/questions/20221825/node-js-says-it-cant-load-sqlite3-module-but-does-anyway)
+
+
+----
+
+# Starting Ghost
+`npm --start --production` will run it in as a foreground process. I use `supervisord` but `forever` runs just as well. See the official docs [here](http://support.ghost.org/deploying-ghost/) for more info. These commands must be run from the root Ghost blog.
+
+npm:
+```
+npm start --production
+```
+
+forever:
+```
+NODE_ENV=production forever start index.js
+```
+
+----
